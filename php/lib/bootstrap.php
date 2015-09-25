@@ -21,10 +21,10 @@ function parseContent($string) {
     return $string;
 }
 
-function processXML($p){
+function processXML($filename){
     //set the file
     //$xml = file_get_contents($_FILES['xml-file']['tmp_name']);
-    $xml = file_get_contents("xml/".$p['xml-file']);
+    $xml = file_get_contents("xml/".$filename);
 
     /** Remove meta tags: */
     $contents = '<?xml version="1.0" encoding="UTF-8" ?>'.PHP_EOL.substr($xml, mb_strpos($xml, '<rss version="2.0"'));

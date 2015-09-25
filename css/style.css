@@ -22,6 +22,47 @@ body {
     background: #fff;
 }
 
+.response-section{background:#f7f7f7;}
+.response-section p{padding: .5rem;}
+
+.config--div{
+    padding: .5rem;
+    background-color: #EDF3F9;
+    border-bottom: 1px dashed #ddd;
+    margin-bottom: 1rem;
+}
+.config--div label{width: 320px; display: inline-block;}
+.config--div input[type="text"]{width: 150px;}
+.config--div input[type="checkbox"]{width: 20px;}
+
+
+button {
+  border-radius: .25rem;
+  transition-duration: .2s;
+  transition-timing-function: ease;
+  transition-property: box-shadow , background-color;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #FFF;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  -webkit-appearance: none;
+  appearance: none;
+  white-space: nowrap;
+  display: inline-block;
+  line-height: 1.5rem;
+  height: auto;
+  min-height: 1.5rem;
+  padding: .35rem 1rem;
+  background-color: #26abe2;
+  text-shadow: 1px 1px 1px #135571;
+}
+button:hover{
+    background-color: #135571;
+}
+
 img, iframe {
     max-width: 100%;
 }
@@ -172,31 +213,6 @@ footer {
 footer p {
     margin: 0;
     color: #999;
-}
-
-
-button {
-  border-radius: .25rem;
-  transition-duration: .2s;
-  transition-timing-function: ease;
-  transition-property: box-shadow , background-color;
-  font-family: inherit;
-  font-size: 1rem;
-  color: #FFF;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  -webkit-appearance: none;
-  appearance: none;
-  white-space: nowrap;
-  display: inline-block;
-  line-height: 1.5rem;
-  height: auto;
-  min-height: 1.5rem;
-  padding: .35rem 1rem;
-  background-color: #26abe2;
-  text-shadow: 1px 1px 1px #135571;
 }
 
 

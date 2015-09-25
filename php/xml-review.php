@@ -3,8 +3,9 @@
 class File_Section {
     function upload_file($post) {
         if(isset($_POST['xmlreviewsubmit'])) {
-
-            $xml = processXML($post);
+            setcookie("WPTranspoFile", $_POST["xml-file"], time()+3600); // global naming event
+            
+            $xml = processXML($_POST["xml-file"]);
 
             //get posts
             $postsData = array();
