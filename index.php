@@ -83,7 +83,9 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                 <ul>
                     <li>Categories</li>
                     <li>Resources</li>
+                    <li>Assigning Parent Relationships</li>
                     <li>Assigning Templates</li>
+                    <li>Assigning Published Values</li>
                 </ul>
 
                 <h4>Enter your XML filename and lets review it</h4>
@@ -112,7 +114,7 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                 <h3 id="import-res">Import Resources</h3>
                 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>#res-section">
                     <div id="res-section">
-                        <p>First, lets define or <strong>Template Assignment</strong>.</p>
+                        <p>First, lets define our <strong>Template Assignment</strong>.</p>
                         <div class="config--div">
                             <label for="tplDefault">Default Template ID</label>
                             <input type="text" placeholder="Template ID" name="tplDefault" id="tplDefault">
@@ -135,6 +137,13 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                             <input type="checkbox" name="tplPageParent" id="tplPageParent"> Yes
                             <br>
                             <small>IE: "About Us" should be a root page but not blog posts.</small>
+                        </div>
+                        <p>Next, lets decide if you want <strong>Respect Publish Setting</strong>.</p>
+                        <div class="config--div">
+                            <label for="tplPublish">Use WP Publish values?</label>
+                            <input type="checkbox" name="tplPublish" id="tplPublish">Yes
+                            <br>
+                            <small>"Draft" will be set to "Unpublished".</small>
                         </div>
 
 

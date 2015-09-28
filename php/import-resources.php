@@ -23,6 +23,16 @@ class Resources_Section {
 
                 $template = "";
 
+                //if Respect Publish setting
+                if($_POST["tplPublish"]){
+                    //if its set to publish
+                    if ($post->children('wp',true)->status == "publish") {
+                        $publish = "1";
+                    } else {
+                        $publish = "0";
+                    }
+                }
+
                 //loop through Item postmeta values
                 foreach ($post->children('wp',true)->postmeta as $wpm) {
 
@@ -46,6 +56,7 @@ class Resources_Section {
                         }
                     }
 
+
                 } //eof PostMeta Loop
 
 
@@ -68,13 +79,13 @@ class Resources_Section {
                     }
 
                     //Insert to DB
-                    $insert = "INSERT INTO `modx_site_content` (`id`,`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$id."','".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','1')";
+                    $insert = "INSERT INTO `modx_site_content` (`id`,`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$id."','".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','".$publish."')";
                     $result = $mysqli->query($insert);
                     if ( $result ) {
                         $postsData[] = $pt;
                     } else {
                         //try again with no ID, it might have been taken by preset
-                        $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','1')";
+                        $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','".$publish."')";
                         $result_two = $mysqli->query($reinsert);
                         $postsData[] = $pt;
                     }
@@ -95,13 +106,13 @@ class Resources_Section {
                     }
 
                     //Insert to DB
-                    $insert = "INSERT INTO `modx_site_content` (`id`,`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$id."','".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','1')";
+                    $insert = "INSERT INTO `modx_site_content` (`id`,`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$id."','".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','".$publish."')";
                     $result = $mysqli->query($insert);
                     if( $result ) {
                         $pageData[] = $pt;
                     } else {
                         //try again with no ID, it might have been taken by preset
-                        $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','1')";
+                        $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','".$publish."')";
                         $result_two = $mysqli->query($reinsert);
                         $pageData[] = $pt;
                     }
