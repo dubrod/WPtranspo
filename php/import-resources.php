@@ -17,6 +17,8 @@ class Resources_Section {
             if(empty($_POST["tplPublish"])){$tplPublish = false; } else { $tplPublish = $_POST["tplPublish"]; }
             if(empty($_POST["tplParent"])){$tplParent = false; } else { $tplParent = $_POST["tplParent"]; }
             if(empty($_POST["tplPageParent"])){$tplPageParent = false; } else { $tplPageParent = $_POST["tplPageParent"]; }
+            if(empty($_POST["taggerCate"])){$taggerCate = false; } else { $taggerCate = $_POST["taggerCate"]; }
+
 
             //get posts
             foreach ($xml->channel->item as $post) {
@@ -33,6 +35,25 @@ class Resources_Section {
                 $template = "";
                 $publish = "0";
                 $pub_date =  strtotime((string)$post->pubDate); if (empty($pub_date)) {$pub_date = strtotime((string)$wp->post_date);}
+
+                //set tagger categories
+                $tagId = "";
+                if($taggerCate){
+                    //loop through <category domain="category" nicename="functional-spirits"><![CDATA[Functional Spirits]]></category>
+                    foreach( $post->category as $c){
+                        if($c["domain"] == "category"){$categoryTemp = $c["nicename"];}
+                    }
+                    //check for tag
+                    $tag_query = "SELECT * FROM modx_tagger_tags";
+                    if ($tag_result = $mysqli->query($tag_query)) {
+                        while ($row = $tag_result->fetch_array()) {
+                            //if name matches set it
+                            if($row["alias"] == $categoryTemp){
+                                $tagId = $row["id"];
+                            }
+                        }
+                    }
+                }
 
                 //if Respect Publish setting
                 if($tplPublish){
@@ -91,6 +112,10 @@ class Resources_Section {
                     $result = $mysqli->query($insert);
                     if ( $result ) {
                         $postsData[] = $pt;
+                        //we are inside matching ID success so we can add Tag now
+                        $tagInsert = "INSERT INTO `modx_tagger_tag_resources` (`tag`,`resource`) VALUES ('".$tagId."','".$id."')";
+                        $tresult = $mysqli->query($tagInsert);
+
                     } else {
                         //try again with no ID, it might have been taken by preset
                         $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`menuindex,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$menuIndex."','".$pub_date."','".$publish."')";
@@ -125,7 +150,8 @@ class Resources_Section {
                         if(!$result_two){printf("%s\n", $mysqli->error);}
                     }
                 }
-            }
+
+            } //for each item
 
 
             return '<p><strong>Imported With No Errors:</strong> Posts: '.count($postsData).' | Pages: '.count($pageData).'</p><p><strong>Errors:</strong> Posts: '.count($postsDataErrors).' | Pages: '.count($pageDataErrors).'</p>';

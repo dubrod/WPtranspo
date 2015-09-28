@@ -56,8 +56,8 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                 </li>
                 <li><a href="#setup" class=" ">Setup</a></li>
                 <li><a href="#review" class=" ">Review XML</a></li>
+                <li><a href="#import-cate" class=" ">Category Import</a></li>
                 <li><a href="#import-res" class=" ">Resource Import</a></li>
-                <!--<li><a href="#import-cate" class=" ">Category Import</a></li>-->
                 <li class="separator"></li>
                 <li><small><? if(isset($_COOKIE["WPTranspoFile"])){ echo "You have set your XML File! <em>".$_COOKIE["WPTranspoFile"]; } ?></em></small></li>
             </ul>
@@ -72,7 +72,8 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                     <li>You have a WP XML file in the "<strong>xml</strong>" folder.</li>
                 </ul>
 
-                <p>You may also wish to <em>Delete</em> the "Home" Resource that comes pre-installed with MODX or <em>Truncate</em> the content table.</p>
+                <p>You may also wish to <em>Delete</em> the "Home" Resource that comes pre-installed with MODX or <em>Truncate</em> the content table.<br>
+                    <small>It is the most common error produced. "Primary Key" of 1 could not import WP Item 1. It will get imported with the next available #.</small></p>
 
                 <hr>
 
@@ -86,6 +87,7 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                     <li>Assigning Parent Relationships</li>
                     <li>Assigning Templates</li>
                     <li>Assigning Published Values</li>
+                    <li>Assigning Tagger Categories</li>
                 </ul>
 
                 <h4>Enter your XML filename and lets review it</h4>
@@ -97,6 +99,26 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                     </form>
                 </div>
                 <div class="response-section"><?php echo $filesuccess; ?></div>
+
+                <hr>
+
+                <h3 id="import-cate">Import Categories</h3>
+                <p>Press the button to import your WP categories as MODX Categories.</p>
+                <div id="cate-section">
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>#cate-section">
+                        <div id="res-section">
+                            <div class="config--div">
+                                <label for="tplTagger">Create Tagger Categories?</label>
+                                <input type="checkbox" value="1" name="tplTagger" id="tplTagger">
+                                <br>
+                                <small>You MUST have a clean version of Tagger installed.</small>
+                            </div>
+
+                        </div>
+                        <button id="catesubmit" name="catesubmit">IMPORT</button>
+                    </form>
+                </div>
+                <div class="response-section"><?php echo $CateSuccess; ?></div>
 
                 <hr>
 
@@ -134,7 +156,13 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                             <br>
                             <small>"Draft" will be set to "Unpublished".</small>
                         </div>
-
+                        <p>Lastly, lets decide if you want to set <strong>Tagger Categories</strong>.</p>
+                        <div class="config--div">
+                            <label for="taggerCate">Match WP Categories to Tagger?</label>
+                            <input type="checkbox" name="taggerCate" id="taggerCate" value="1">Yes
+                            <br>
+                            <small>You must have completed the Category import above.</small>
+                        </div>
 
                         <p>Press the button to import your posts and pages as MODX Resources.</p>
 
@@ -145,17 +173,6 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
 
                 <hr>
 
-                <!--<h3 id="import-cate">Import Categories</h3>
-                <p>Press the button to import your WP categories as MODX Categories and as <strong>Tagger</strong> Categories.</p>
-                <p><strong>You MUST have a clean version of Tagger installed.</strong></p>
-                <div id="cate-section">
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>#cate-section">
-                        <button id="catesubmit" name="catesubmit">IMPORT</button>
-                    </form>
-                </div>
-                <div class="response-section"><?php echo $CateSuccess; ?></div>
-
-                <hr>-->
 
                 <br><br>
 
