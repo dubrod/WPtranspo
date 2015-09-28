@@ -8,10 +8,19 @@ class Resources_Section {
             $xml = processXML($xmlFileName);
 
             $pageData = array();
+            $pageDataErrors = array();
             $postsData = array();
+            $postsDataErrors = array();
+
+            //post variables
+            if(empty($_POST["tplMatch"])){ $tplMatch = false;} else { $tplMatch = $_POST["tplMatch"]; }
+            if(empty($_POST["tplPublish"])){$tplPublish = false; } else { $tplPublish = $_POST["tplPublish"]; }
+            if(empty($_POST["tplParent"])){$tplParent = false; } else { $tplParent = $_POST["tplParent"]; }
+            if(empty($_POST["tplPageParent"])){$tplPageParent = false; } else { $tplPageParent = $_POST["tplPageParent"]; }
 
             //get posts
             foreach ($xml->channel->item as $post) {
+
                 //if its not a post, break
                 $type = $post->children('wp',true)->post_type;
 
@@ -22,9 +31,11 @@ class Resources_Section {
                 $content =  $mysqli->real_escape_string(parseContent((string)$post->children('content',true)->encoded));
                 $menuIndex = $post->children('wp',true)->menu_order;
                 $template = "";
+                $publish = "0";
+                $pub_date =  strtotime((string)$post->pubDate); if (empty($pub_date)) {$pub_date = strtotime((string)$wp->post_date);}
 
                 //if Respect Publish setting
-                if($_POST["tplPublish"]){
+                if($tplPublish){
                     //if its set to publish
                     if ($post->children('wp',true)->status == "publish") {
                         $publish = "1";
@@ -37,16 +48,17 @@ class Resources_Section {
                 foreach ($post->children('wp',true)->postmeta as $wpm) {
 
                     //if template matching set
-                    if($_POST["tplMatch"]){
+                    if($tplMatch){
                         //if its a template Meta Item
+                        //<wp:meta_key>_wp_page_template</wp:meta_key>
                         if ($wpm->meta_key == "_wp_page_template") {
                             //<wp:meta_value><![CDATA[default]]></wp:meta_value>
                             $wp_temp = parseContent((string)$wpm->meta_value);
 
                             //check for automatic match
                             $tpl_query = "SELECT * FROM modx_site_templates";
-                            if ($result = $mysqli->query($tpl_query)) {
-                                while ($row = $result->fetch_array()) {
+                            if ($tpl_result = $mysqli->query($tpl_query)) {
+                                while ($row = $tpl_result->fetch_array()) {
                                     //if name matches set it
                                     if($row["templatename"] == $wp_temp){
                                         $template = $row["id"];
@@ -59,12 +71,8 @@ class Resources_Section {
 
                 } //eof PostMeta Loop
 
-
                 //if template was not set above
-                if(!$template){$template = $_POST["tplDefault"];}
-
-                $pub_date =  strtotime((string)$post->pubDate);
-                    if (empty($pub_date)) {$pub_date = strtotime((string)$wp->post_date);}
+                if(empty($template)){$template = $_POST["tplDefault"];}
 
 
                 //Start Post Type Custom options
@@ -72,10 +80,10 @@ class Resources_Section {
                 if($type == "post"){
 
                     //if Global Parent Set
-                    if($_POST["tplParent"]){
-                        $parent = $_POST["tplParent"];
-                    } else {
+                    if(empty($tplParent)){
                         $parent = $post->children('wp',true)->post_parent;
+                    } else {
+                        $parent = $tplParent;
                     }
 
                     //Insert to DB
@@ -87,10 +95,9 @@ class Resources_Section {
                         //try again with no ID, it might have been taken by preset
                         $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`menuindex,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$menuIndex."','".$pub_date."','".$publish."')";
                         $result_two = $mysqli->query($reinsert);
-                        $postsData[] = $pt;
+                        $postsDataErrors[] = $pt;
                     }
                 }
-
 
 
                 //get pages
@@ -99,28 +106,29 @@ class Resources_Section {
                 if($type == "page"){
 
                     //if Global Parent && Separate Page is NOT checked
-                    if($_POST["tplParent"] && !$_POST["tplPageParent"]){
-                        $parent = $_POST["tplParent"];
+                    if($tplParent && empty($tplPageParent)){
+                        $parent = $tplParent;
                     } else {
                         $parent = $post->children('wp',true)->post_parent;
                     }
 
                     //Insert to DB
-                    $insert = "INSERT INTO `modx_site_content` (`id`,`pagetitle`,`introtext`,`content`,`parent`,`template`,`menuindex,`publishedon`,`published`) VALUES ('".$id."','".$pt."','".$it."','".$content."','".$parent."','".$template."','".$menuIndex."','".$pub_date."','".$publish."')";
+                    $insert = " INSERT INTO `modx_site_content` (`id`,`pagetitle`,`introtext`,`content`,`parent`,`template`,`menuindex`,`publishedon`,`published`) VALUES ('".$id."','".$pt."','".$it."','".$content."','".$parent."','".$template."','".$menuIndex."','".$pub_date."','".$publish."')";
                     $result = $mysqli->query($insert);
                     if( $result ) {
                         $pageData[] = $pt;
                     } else {
                         //try again with no ID, it might have been taken by preset
-                        $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`menuindex,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$menuIndex."','".$pub_date."','".$publish."')";
+                        $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`menuindex`,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$menuIndex."','".$pub_date."','".$publish."')";
                         $result_two = $mysqli->query($reinsert);
-                        $pageData[] = $pt;
+                        $pageDataErrors[] = $pt;
+                        if(!$result_two){printf("%s\n", $mysqli->error);}
                     }
                 }
             }
 
 
-            return '<p><strong>Posts Imported:</strong> '.count($postsData).' | <strong>Pages Imported:</strong> '.count($pageData).'</p>';
+            return '<p><strong>Imported With No Errors:</strong> Posts: '.count($postsData).' | Pages: '.count($pageData).'</p><p><strong>Errors:</strong> Posts: '.count($postsDataErrors).' | Pages: '.count($pageDataErrors).'</p>';
 
         }
     }

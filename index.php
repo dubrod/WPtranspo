@@ -56,8 +56,8 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                 </li>
                 <li><a href="#setup" class=" ">Setup</a></li>
                 <li><a href="#review" class=" ">Review XML</a></li>
-                <li><a href="#import-cate" class=" ">Category Import</a></li>
                 <li><a href="#import-res" class=" ">Resource Import</a></li>
+                <!--<li><a href="#import-cate" class=" ">Category Import</a></li>-->
                 <li class="separator"></li>
                 <li><small><? if(isset($_COOKIE["WPTranspoFile"])){ echo "You have set your XML File! <em>".$_COOKIE["WPTranspoFile"]; } ?></em></small></li>
             </ul>
@@ -100,17 +100,6 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
 
                 <hr>
 
-                <h3 id="import-cate">Import Categories</h3>
-                <p>Press the button to import your categories as MODX Categories.</p>
-                <div id="cate-section">
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>#cate-section">
-                        <button id="catesubmit" name="catesubmit">IMPORT</button>
-                    </form>
-                </div>
-                <div class="response-section"><?php echo $CateSuccess; ?></div>
-
-                <hr>
-
                 <h3 id="import-res">Import Resources</h3>
                 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>#res-section">
                     <div id="res-section">
@@ -121,7 +110,7 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                         </div>
                         <div class="config--div">
                             <label for="tplMatch">Match WP Names to MODX</label>
-                            <input type="checkbox" name="tplMatch" id="tplMatch"> Yes
+                            <input type="checkbox" name="tplMatch" id="tplMatch" value="1"> Yes
                             <br>
                             <small>Be sure you have setup matching name templates already in MODX</small>
                         </div>
@@ -134,14 +123,14 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                         </div>
                         <div class="config--div">
                             <label for="tplPageParent">Separate "Pages" from Global Parent?</label>
-                            <input type="checkbox" name="tplPageParent" id="tplPageParent"> Yes
+                            <input type="checkbox" name="tplPageParent" id="tplPageParent" value="1"> Yes
                             <br>
                             <small>IE: "About Us" should be a root page but not blog posts.</small>
                         </div>
                         <p>Next, lets decide if you want to <strong>Respect Publish Settings</strong>.</p>
                         <div class="config--div">
                             <label for="tplPublish">Use WP Publish values?</label>
-                            <input type="checkbox" name="tplPublish" id="tplPublish">Yes
+                            <input type="checkbox" name="tplPublish" id="tplPublish" value="1">Yes
                             <br>
                             <small>"Draft" will be set to "Unpublished".</small>
                         </div>
@@ -155,6 +144,18 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                 <div class="response-section"><?php echo $ResSuccess; ?></div>
 
                 <hr>
+
+                <!--<h3 id="import-cate">Import Categories</h3>
+                <p>Press the button to import your WP categories as MODX Categories and as <strong>Tagger</strong> Categories.</p>
+                <p><strong>You MUST have a clean version of Tagger installed.</strong></p>
+                <div id="cate-section">
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>#cate-section">
+                        <button id="catesubmit" name="catesubmit">IMPORT</button>
+                    </form>
+                </div>
+                <div class="response-section"><?php echo $CateSuccess; ?></div>
+
+                <hr>-->
 
                 <br><br>
 
