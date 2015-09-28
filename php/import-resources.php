@@ -21,14 +21,46 @@ class Resources_Section {
                 $it =       $mysqli->real_escape_string(parseContent((string)$post->children('excerpt',true)->encoded));
                 $content =  $mysqli->real_escape_string(parseContent((string)$post->children('content',true)->encoded));
 
-                $template = $_POST["tplDefault"];
+                $template = "";
+
+                //loop through Item postmeta values
+                foreach ($post->children('wp',true)->postmeta as $wpm) {
+
+                    //if template matching set
+                    if($_POST["tplMatch"]){
+                        //if its a template Meta Item
+                        if ($wpm->meta_key == "_wp_page_template") {
+                            //<wp:meta_value><![CDATA[default]]></wp:meta_value>
+                            $wp_temp = parseContent((string)$wpm->meta_value);
+
+                            //check for automatic match
+                            $tpl_query = "SELECT * FROM modx_site_templates";
+                            if ($result = $mysqli->query($tpl_query)) {
+                                while ($row = $result->fetch_array()) {
+                                    //if name matches set it
+                                    if($row["templatename"] == $wp_temp){
+                                        $template = $row["id"];
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                } //eof PostMeta Loop
+
+
+                //if template was not set above
+                if(!$template){$template = $_POST["tplDefault"];}
 
                 $pub_date =  strtotime((string)$post->pubDate);
                     if (empty($pub_date)) {$pub_date = strtotime((string)$wp->post_date);}
 
 
+                //Start Post Type Custom options
+
                 if($type == "post"){
 
+                    //if Global Parent Set
                     if($_POST["tplParent"]){
                         $parent = $_POST["tplParent"];
                     } else {
@@ -38,7 +70,14 @@ class Resources_Section {
                     //Insert to DB
                     $insert = "INSERT INTO `modx_site_content` (`id`,`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$id."','".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','1')";
                     $result = $mysqli->query($insert);
-                    if ( $result ) { $postsData[] = $pt;}
+                    if ( $result ) {
+                        $postsData[] = $pt;
+                    } else {
+                        //try again with no ID, it might have been taken by preset
+                        $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','1')";
+                        $result_two = $mysqli->query($reinsert);
+                        $postsData[] = $pt;
+                    }
                 }
 
 
@@ -48,6 +87,7 @@ class Resources_Section {
 
                 if($type == "page"){
 
+                    //if Global Parent && Separate Page is NOT checked
                     if($_POST["tplParent"] && !$_POST["tplPageParent"]){
                         $parent = $_POST["tplParent"];
                     } else {
@@ -60,7 +100,7 @@ class Resources_Section {
                     if( $result ) {
                         $pageData[] = $pt;
                     } else {
-                        //try again with no ID, its might have been taken
+                        //try again with no ID, it might have been taken by preset
                         $reinsert = "INSERT INTO `modx_site_content` (`pagetitle`,`introtext`,`content`,`parent`,`template`,`publishedon`,`published`) VALUES ('".$pt."','".$it."','".$content."','".$parent."','".$template."','".$pub_date."','1')";
                         $result_two = $mysqli->query($reinsert);
                         $pageData[] = $pt;
