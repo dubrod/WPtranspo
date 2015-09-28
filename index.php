@@ -59,7 +59,7 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                 <li><a href="#import-cate" class=" ">Category Import</a></li>
                 <li><a href="#import-res" class=" ">Resource Import</a></li>
                 <li class="separator"></li>
-                <li><small><? if(isset($_COOKIE["WPTranspoFile"])){ echo "You have set your XML File! <em>".$_COOKIE["WPTranspoFile"]; } ?></em></small></li>
+                <li><small><?php if(isset($_COOKIE["WPTranspoFile"])){ echo "You have set your XML File! <em>".$_COOKIE["WPTranspoFile"]; } ?></em></small></li>
             </ul>
             <div class="docs-content">
                 <h2> Getting Started</h2>
