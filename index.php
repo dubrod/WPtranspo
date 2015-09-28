@@ -138,7 +138,7 @@ $ResSuccess = $Resources_Section->res_import($_POST, $xmlFileName);
                             <br>
                             <small>IE: "About Us" should be a root page but not blog posts.</small>
                         </div>
-                        <p>Next, lets decide if you want <strong>Respect Publish Setting</strong>.</p>
+                        <p>Next, lets decide if you want to <strong>Respect Publish Settings</strong>.</p>
                         <div class="config--div">
                             <label for="tplPublish">Use WP Publish values?</label>
                             <input type="checkbox" name="tplPublish" id="tplPublish">Yes
