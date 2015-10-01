@@ -9,6 +9,7 @@ This is a standalone tutorial package, NOT an Extra you install via the Manager.
 ## Possible error points
 
 1. the script assumes no database table prefix names. It's looking for `modx_site_content` etc.
+2. if the database is not utf8 there may be encoding issues
 
 ---
 

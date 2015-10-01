@@ -30,7 +30,11 @@ class Resources_Section {
                 $id = $post->children('wp',true)->post_id;
                 $pt =       $mysqli->real_escape_string(parseContent((string)$post->title));
                 $it =       $mysqli->real_escape_string(parseContent((string)$post->children('excerpt',true)->encoded));
-                $content =  $mysqli->real_escape_string(parseContent((string)$post->children('content',true)->encoded));
+                $raw_content =  $mysqli->real_escape_string(parseContent((string)$post->children('content',true)->encoded));
+                //print_r($raw_content); //debug your conent
+                $content = '<p>' . str_replace('\n\n', "</p><p>", $raw_content) . "</p>"; // make paragraphs, including one at the end;
+                //print_r($content);//debug your conent
+                //exit();//debug your conent
                 $alias = $mysqli->real_escape_string(parseContent((string)$post->children('wp',true)->post_name));
                 $menuIndex = $post->children('wp',true)->menu_order;
                 $template = "";

@@ -11,12 +11,14 @@ function parseContent($string) {
         '?',
         '[[',
         ']]',
+        '&#147;', //Wordpress made ? this for some reason
     ),array(
         '&#147;',
         '&#148;',
         '&#189;',
         '&#91;&#91;',
         '&#93;&#93;',
+        '?',
     ),$string);
     return $string;
 }
